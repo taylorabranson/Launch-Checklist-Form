@@ -43,10 +43,16 @@ function isReadyForLaunch(fuelLevel, cargoMass) {
    }
 }
 
-function updateShuttleStatus(event, pilot, copilot, fuelLevel, cargoMass, launchStatus) {
+function updateShuttleStatus(event, pilot, copilot, fuelLevel, cargoMass) {
+   let launchStatus = document.getElementById("launchStatus");
+   let pilotStatus = document.getElementById("pilotStatus");
+   let copilotStatus = document.getElementById("copilotStatus");
+   let fuelStatus = document.getElementById("fuelStatus");
+   let cargoStatus = document.getElementById("cargoStatus");
+
    document.getElementById("faultyItems").style.visibility = 'visible';
-   pilot.innerHTML = `Pilot ${pilot.value} is ready`;
-   copilot.innerHTML = `Copilot ${copilot.value} is ready`;
+   pilotStatus.innerHTML = `Pilot ${pilot.value} is ready`;
+   copilotStatus.innerHTML = `Copilot ${copilot.value} is ready`;
    
    if (isReadyForLaunch(fuelLevel.value, cargoMass.value) === false) {
       launchStatus.innerHTML = 'Shuttle not ready for launch';
@@ -57,15 +63,15 @@ function updateShuttleStatus(event, pilot, copilot, fuelLevel, cargoMass, launch
    }
      
    if (fuelLevel.value < 10000) {
-      fuelLevel.innerHTML = 'Fuel level too low for launch';
+      fuelStatus.innerHTML = 'Fuel level too low for launch';
    } else {
-      fuelLevel.innerHTML = 'Fuel level high enough for launch';
+      fuelStatus.innerHTML = 'Fuel level high enough for launch';
    }
 
    if (cargoMass.value > 10000) {
-      cargoMass.innerHTML = 'Cargo mass too high for launch';
+      cargoStatus.innerHTML = 'Cargo mass too high for launch';
    } else {
-      cargoMass.innerHTML = 'Cargo mass low enough for launch';
+      cargoStatus.innerHTML = 'Cargo mass low enough for launch';
    }
 }
 
@@ -84,24 +90,24 @@ function loadPlanetaryData(missionTarget) {
             </ol>
             <img src="${json[index].image}">
          `
-      })
+      });
    });
 }
 
 function init() {
    let form = document.getElementById("launchForm");
-   let pilot = document.querySelector("input[name=pilotName");
-   let copilot = document.querySelector("input[name=copilotName");
-   let fuelLevel = document.querySelector("input[name=fuelLevel");
-   let cargoMass = document.querySelector("input[name=cargoMass");
-   let launchStatus = document.getElementById("launchStatus");
+   let pilot = document.getElementsByName("pilotName")[0];
+   let copilot = document.getElementsByName("copilotName")[0];
+   let fuelLevel = document.getElementsByName("fuelLevel")[0];
+   let cargoMass = document.getElementsByName("cargoMass")[0];
    let missionTarget = document.getElementById("missionTarget");
    
    loadPlanetaryData(missionTarget);
 
    form.addEventListener("submit", function(event) {   
       entryValidation(event, pilot, copilot, fuelLevel, cargoMass);
-      updateShuttleStatus(event, pilot, copilot, fuelLevel, cargoMass, launchStatus);
+      updateShuttleStatus(event, pilot, copilot, fuelLevel, cargoMass);
+      event.preventDefault();
    });
 }
 
