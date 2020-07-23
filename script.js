@@ -21,7 +21,7 @@ function randomIndexFromArray(arr) {
    return Math.floor(Math.random() * arr.length);
 }
 
-function entryValidation(event, pilot, copilot, fuelLevel, cargoMass) {
+function entryValidation(pilot, copilot, fuelLevel, cargoMass) {
    if (pilot.value === '' || copilot.value === '' || fuelLevel.value === '' || cargoMass.value === '') {
       entryError("All fields are required!");
    } else if (isNaN(pilot.value) === false) {
@@ -32,18 +32,20 @@ function entryValidation(event, pilot, copilot, fuelLevel, cargoMass) {
       entryError('Fuel Level must be a number');
    } else if (isNaN(cargoMass.value) === true) {
       entryError('Cargo Mass must be a number');
+   } else {
+      return true;
    }
 }
 
-function isReadyForLaunch(fuelLevel, cargoMass) {
-   if (fuelLevel < 10000 || cargoMass > 10000) {
+function isReadyForLaunch(pilot, copilot, fuelLevel, cargoMass) {
+   if (fuelLevel.value < 10000 || cargoMass.value > 10000) {
       return false;
    } else {
       return true;
    }
 }
 
-function updateShuttleStatus(event, pilot, copilot, fuelLevel, cargoMass) {
+function updateShuttleStatus(pilot, copilot, fuelLevel, cargoMass, validEntry) {
    let launchStatus = document.getElementById("launchStatus");
    let pilotStatus = document.getElementById("pilotStatus");
    let copilotStatus = document.getElementById("copilotStatus");
@@ -54,12 +56,12 @@ function updateShuttleStatus(event, pilot, copilot, fuelLevel, cargoMass) {
    pilotStatus.innerHTML = `Pilot ${pilot.value} is ready`;
    copilotStatus.innerHTML = `Copilot ${copilot.value} is ready`;
    
-   if (isReadyForLaunch(fuelLevel.value, cargoMass.value) === false) {
-      launchStatus.innerHTML = 'Shuttle not ready for launch';
-      launchStatus.style.color = 'red';
-   } else {
+   if (isReadyForLaunch(pilot, copilot, fuelLevel, cargoMass) === true && validEntry === true) {
       launchStatus.innerHTML = 'Shuttle is ready for launch';
       launchStatus.style.color = 'green';
+   } else {
+      launchStatus.innerHTML = 'Shuttle not ready for launch';
+      launchStatus.style.color = 'red';
    }
      
    if (fuelLevel.value < 10000) {
@@ -105,8 +107,8 @@ function init() {
    loadPlanetaryData(missionTarget);
 
    form.addEventListener("submit", function(event) {   
-      entryValidation(event, pilot, copilot, fuelLevel, cargoMass);
-      updateShuttleStatus(event, pilot, copilot, fuelLevel, cargoMass);
+      let validEntry = entryValidation(pilot, copilot, fuelLevel, cargoMass);
+      updateShuttleStatus(pilot, copilot, fuelLevel, cargoMass, validEntry);
       event.preventDefault();
    });
 }
